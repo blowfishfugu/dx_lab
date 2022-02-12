@@ -10,6 +10,9 @@ https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/work-with-dxgi
 https://docs.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-enum
 https://docs.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-downlevel-get
 
+walkthrough
+https://antongerdelan.net/opengl/d3d11.html
+
 initialize a window
 ...
 
