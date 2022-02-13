@@ -14,6 +14,7 @@ https://docs.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-
 
 walkthrough
 https://antongerdelan.net/opengl/d3d11.html
+https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/complete-code-sample-for-using-a-corewindow-with-directx#rendererh
 
 initialize a window
 ...
