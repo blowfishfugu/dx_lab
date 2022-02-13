@@ -3,7 +3,7 @@
 
 #include "framework.h"
 #include "dx_lab.h"
-
+//#include <gpu_exports.cpp>
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -40,17 +40,25 @@ int APIENTRY _tWinMain( _In_ HINSTANCE hInstance,
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DXLAB));
 
-    MSG msg;
+	//init msg
+	MSG msg; 
+	ZeroMemory(&msg, sizeof(msg));
+	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
-    // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
+	bool gotMessage = false;
+	while (msg.message != WM_QUIT)
+	{
+		gotMessage = (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE) != 0);
+		if (gotMessage)
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			//render
+		}
+	}
 
     return (int) msg.wParam;
 }

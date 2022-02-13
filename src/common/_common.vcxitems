@@ -16,4 +16,7 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)readme.md" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)gpu_exports.cpp" />
+  </ItemGroup>
 </Project>
