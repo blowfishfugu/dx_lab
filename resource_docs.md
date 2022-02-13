@@ -3,6 +3,8 @@ List of documentation
 
 wrl comptr
 https://docs.microsoft.com/en-us/windows/win32/prog-dx-with-com
+coinit-lifetime
+https://docs.microsoft.com/en-us/cpp/cppcx/wrl/how-to-create-a-classic-com-component-using-wrl?view=msvc-170
 
 check capabilities
 https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/work-with-dxgi
