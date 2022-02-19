@@ -39,3 +39,6 @@ https://docs.microsoft.com/en-us/windows/win32/direct3d12/direct3d-12-graphics
 
 how-to...
 https://docs.microsoft.com/en-us/windows/win32/direct3d11/how-to-use-direct3d-11
+
+imgui..perhaps
+https://github.com/ocornut/imgui/blob/master/examples/example_win32_directx11/main.cpp
