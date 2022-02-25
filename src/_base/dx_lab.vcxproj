@@ -89,12 +89,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dxenv.h" />
     <ClInclude Include="LabApp.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dxenv.cpp" />
     <ClCompile Include="LabApp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

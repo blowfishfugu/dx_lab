@@ -2,6 +2,7 @@
 #ifndef LABAPP_H
 #define LABAPP_H
 #include "framework.h"
+#include "dxenv.h"
 
 class LabApp
 {
@@ -11,6 +12,7 @@ class LabApp
 	std::string _appTitle;
 	
 	Initializers::Com comInit;
+	DxEnv dx;
 	ATOM MyRegisterClass(HINSTANCE hInstance);
 public:
 	LabApp(LPCTSTR appTitle);

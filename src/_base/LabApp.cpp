@@ -54,6 +54,10 @@ bool LabApp::Init()
 	{
 		return false;
 	}
+	if (!dx.Init())
+	{
+		return false;
+	}
 	
 	m_mainwnd = CreateWindow(szWindowClass, this->_appTitle.c_str(),
 		WS_OVERLAPPEDWINDOW,
@@ -63,6 +67,7 @@ bool LabApp::Init()
 	{
 		return false;
 	}
+
 
 	ShowWindow(m_mainwnd, SW_SHOW);
 	UpdateWindow(m_mainwnd);
