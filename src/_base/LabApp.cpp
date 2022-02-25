@@ -59,6 +59,7 @@ bool LabApp::Init()
 		return false;
 	}
 	
+
 	m_mainwnd = CreateWindow(szWindowClass, this->_appTitle.c_str(),
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, m_instance, nullptr);
@@ -71,6 +72,9 @@ bool LabApp::Init()
 
 	ShowWindow(m_mainwnd, SW_SHOW);
 	UpdateWindow(m_mainwnd);
+	
+	dx.BuildSwapChain(this->m_mainwnd);
+	
 	return true;
 }
 

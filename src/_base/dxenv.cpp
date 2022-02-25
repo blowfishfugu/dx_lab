@@ -45,9 +45,7 @@ bool DxEnv::Init()
 	constexpr const D3D_FEATURE_LEVEL featureLevels[] =
 	{
 		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_1,
-		D3D_FEATURE_LEVEL_10_0
+		D3D_FEATURE_LEVEL_11_0
 	};
 	constexpr const UINT featureLevelCount = sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL);
 
@@ -69,4 +67,36 @@ bool DxEnv::Init()
 		adapters.size()>0 
 		&& _device!=nullptr 
 		&& _context!=nullptr;
+}
+
+bool DxEnv::BuildSwapChain(HWND wnd)
+{
+	if (!_device) { return false; }
+	ComPtr<IDXGIDevice1> pDevice;
+	_device.As(&pDevice);
+	if (!pDevice) { return false; }
+
+	ComPtr<IDXGIAdapter> pAdapter;
+	pDevice->GetAdapter(&pAdapter);
+	if (!pAdapter) { return false; }
+
+	ComPtr<IDXGIFactory1> pFactory;
+	pAdapter->GetParent(__uuidof(pFactory), &pFactory);
+	if (!pFactory) { return false; }
+
+	DXGI_SWAP_CHAIN_DESC desc;
+	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
+	desc.Windowed = TRUE; // Sets the initial state of full-screen mode.
+	desc.BufferCount = 2;
+	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	desc.SampleDesc.Count = 1;      //multisampling setting
+	desc.SampleDesc.Quality = 0;    //vendor-specific flag
+	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+	desc.OutputWindow = wnd;
+	pFactory->CreateSwapChain(_device.Get(), &desc, &_swapChain);
+	if (!_swapChain) { return false; }
+
+
+	return true;
 }

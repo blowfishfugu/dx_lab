@@ -14,11 +14,13 @@ class DxEnv
 public:
 	ComPtr<ID3D11Device1> _device;
 	ComPtr<ID3D11DeviceContext1> _context;
+
+	ComPtr<IDXGISwapChain> _swapChain;
 public:
 	bool EnumAdapters(std::vector<ComPtr<IDXGIAdapter1> >& adapters);
 	void PrintAdapters(std::vector<ComPtr<IDXGIAdapter1>>& adapters);
 	bool Init();
-
+	bool BuildSwapChain(HWND wnd);
 };
 
 #endif
