@@ -73,7 +73,10 @@ bool LabApp::Init()
 	ShowWindow(m_mainwnd, SW_SHOW);
 	UpdateWindow(m_mainwnd);
 	
-	dx.BuildSwapChain(this->m_mainwnd);
+	if(!dx.BuildSwapChain(this->m_mainwnd))
+	{
+		return false;
+	}
 	
 	return true;
 }
