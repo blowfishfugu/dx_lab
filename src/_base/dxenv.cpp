@@ -6,9 +6,9 @@ bool DxEnv::EnumAdapters(std::vector<ComPtr<IDXGIAdapter1>>& adapters)
 {
 	ComPtr<IDXGIFactory1> pFactory;
 	CreateDXGIFactory1(__uuidof(IDXGIFactory1), &pFactory);
-	if (!pFactory) { return adapters.size()>0; }
-	
-	IDXGIAdapter1* pAdapter=nullptr;
+	if (!pFactory) { return adapters.size() > 0; }
+
+	IDXGIAdapter1* pAdapter = nullptr;
 	UINT adapterAt = 0;
 	while (pFactory->EnumAdapters1(adapterAt, &pAdapter) != DXGI_ERROR_NOT_FOUND)
 	{
@@ -41,7 +41,7 @@ bool DxEnv::Init()
 	std::vector<ComPtr<IDXGIAdapter1>> adapters;
 	this->EnumAdapters(adapters);
 	this->PrintAdapters(adapters);
-	
+
 	constexpr const D3D_FEATURE_LEVEL featureLevels[] =
 	{
 		D3D_FEATURE_LEVEL_11_1,
@@ -63,10 +63,10 @@ bool DxEnv::Init()
 		OutputDebugString(_T("\n"));
 	}
 
-	return 
-		adapters.size()>0 
-		&& _device!=nullptr 
-		&& _context!=nullptr;
+	return
+		adapters.size() > 0
+		&& _device != nullptr
+		&& _context != nullptr;
 }
 
 bool DxEnv::BuildSwapChain(HWND wnd)
@@ -94,9 +94,40 @@ bool DxEnv::BuildSwapChain(HWND wnd)
 	desc.SampleDesc.Quality = 0;    //vendor-specific flag
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	desc.OutputWindow = wnd;
-	pFactory->CreateSwapChain(_device.Get(), &desc, &_swapChain);
+	ComPtr<IDXGISwapChain> chain;
+	pFactory->CreateSwapChain(_device.Get(), &desc, chain.GetAddressOf());
+	if (!chain) { return false; }
+	chain.As(&_swapChain);
 	if (!_swapChain) { return false; }
 
-
+	ConnectBuffersAndViews();
 	return true;
+}
+
+void DxEnv::ConnectBuffersAndViews()
+{
+	_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &_backBuffer);
+	_device->CreateRenderTargetView(_backBuffer.Get(), nullptr, &_renderTarget);
+	_backBuffer->GetDesc(&_backBufferDesc);
+
+	CD3D11_TEXTURE2D_DESC depthStencilDesc{
+	DXGI_FORMAT_D24_UNORM_S8_UINT,
+	_backBufferDesc.Width,
+	_backBufferDesc.Height,
+	1,
+	1,
+	D3D11_BIND_DEPTH_STENCIL,
+	D3D11_USAGE_DEFAULT,0,1,0,0
+	};
+	_device->CreateTexture2D(&depthStencilDesc, nullptr, &_stencilBuffer);
+
+	CD3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc(D3D11_DSV_DIMENSION_TEXTURE2D);
+	_device->CreateDepthStencilView(_stencilBuffer.Get(), &depthStencilViewDesc, &_stencilView);
+	ZeroMemory(&_viewPortDesc, sizeof(D3D11_VIEWPORT));
+	_viewPortDesc.Width = _backBufferDesc.Width;
+	_viewPortDesc.Height = _backBufferDesc.Height;
+	_viewPortDesc.MinDepth = 0.0f;
+	_viewPortDesc.MaxDepth = 1.0f;
+	_context->RSSetViewports(1, &_viewPortDesc);
+
 }

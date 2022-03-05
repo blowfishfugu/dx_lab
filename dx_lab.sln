@@ -16,6 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{A49980
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_common", "src\common\_common.vcxitems", "{06FBE40D-75E3-4C87-BC28-70EB46F9D57D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{C94F4C76-31BA-4BA0-806B-B93896817354}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+		src\common\readme.md = src\common\readme.md
+		resource_docs.md = resource_docs.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\common\_common.vcxitems*{06fbe40d-75e3-4c87-bc28-70eb46f9d57d}*SharedItemsImports = 9
