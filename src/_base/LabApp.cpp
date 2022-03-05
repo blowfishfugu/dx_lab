@@ -99,7 +99,7 @@ int LabApp::Run()
 		else
 		{
 			//render
-			dx._swapChain->Present(0, 0);
+			dx._swapChain->Present(1, 0);
 		}
 	}
 	this->OnLeave();

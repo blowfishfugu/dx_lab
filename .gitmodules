@@ -1,0 +1,6 @@
+[submodule "src/libs/DirectXMath"]
+	path = src/libs/DirectXMath
+	url = https://github.com/microsoft/DirectXMath.git
+[submodule "src/libs/imgui"]
+	path = src/libs/imgui
+	url = https://github.com/ocornut/imgui.git
