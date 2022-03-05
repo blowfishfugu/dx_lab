@@ -123,6 +123,7 @@ void DxEnv::ConnectBuffersAndViews()
 
 	CD3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc(D3D11_DSV_DIMENSION_TEXTURE2D);
 	_device->CreateDepthStencilView(_stencilBuffer.Get(), &depthStencilViewDesc, &_stencilView);
+	
 	ZeroMemory(&_viewPortDesc, sizeof(D3D11_VIEWPORT));
 	_viewPortDesc.Width = _backBufferDesc.Width;
 	_viewPortDesc.Height = _backBufferDesc.Height;
