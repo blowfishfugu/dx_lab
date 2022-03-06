@@ -115,7 +115,24 @@ int LabApp::Run()
 		}
 		else
 		{
-			//render
+			//TODO: getTimeDelta, common to all scenes
+
+			//updateEntities //TODO: a SceneMgr to add/remove current entities
+
+			//{pausable
+			//sMovement
+			//sPhysics/sCollisions
+			//sUpdateLifespans //->determine nexts to remove
+			//}
+
+			//sUpdateInputs //->different inputs per scene
+
+			//sRenderSystem //->different renderoutput per scene
+			
+			const float rgba[4]{0.1f,0.1f,0.3f,1.0f};
+			dx._context->ClearRenderTargetView(dx._renderTarget.Get(), rgba);
+
+			//showframe
 			dx._swapChain->Present(1, 0);
 		}
 	}
