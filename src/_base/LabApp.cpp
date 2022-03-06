@@ -5,60 +5,77 @@ namespace
 {
 	constexpr LPCTSTR szWindowClass{ _T("dx_lab_window") };
 }
-ATOM LabApp::MyRegisterClass(HINSTANCE hInstance)
+ATOM LabApp::MyRegisterClass()
 {
-	if (hInstance == NULL)
+	if (m_instance == NULL)
 	{
 		return NULL;
 	}
+
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
-	HICON icon=LoadIcon(hInstance, MAKEINTRESOURCE(IDI_DXLAB));
-
-	this->_exePath.reserve(MAX_PATH);
-	GetModuleFileName(NULL, _exePath.data(), MAX_PATH);
-
+	HICON icon=LoadIcon(m_instance, MAKEINTRESOURCE(IDI_DXLAB));
 	// If the icon is NULL, then use the first one found in the exe
 	if (icon == NULL)
-		icon = ExtractIcon(hInstance, _exePath.c_str(), 0);
+		icon = ExtractIcon(m_instance, _exePath.c_str(), 0);
 
-	wcex.style = CS_HREDRAW | CS_VREDRAW;
+	wcex.style = CS_HREDRAW | CS_VREDRAW; //CS_OWNDC <- ?better
 	wcex.lpfnWndProc = LabApp::AppWndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
-	wcex.hInstance = hInstance;
+	wcex.hInstance = m_instance;
 	wcex.hIcon = icon;
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	
+	_registeredClass=RegisterClassEx(&wcex);
 
-	return RegisterClassEx(&wcex);
+	return _registeredClass;
+}
+
+void LabApp::MyUnregisterClass()
+{
+	if (_registeredClass && m_instance )
+	{
+		UnregisterClass(szWindowClass, m_instance);
+	}
 }
 
 LabApp::LabApp(LPCTSTR appTitle)
 	:_appTitle{appTitle}
-{
-}
-
-bool LabApp::Init()
 {
 	if (m_instance == NULL)
 	{
 		m_instance = (HINSTANCE)GetModuleHandle(NULL);
 	}
 
-	if (!MyRegisterClass(m_instance))
+	this->_exePath.reserve(MAX_PATH);
+	GetModuleFileName(NULL, _exePath.data(), MAX_PATH);
+
+	MyRegisterClass();
+}
+
+
+LabApp::~LabApp()
+{
+	MyUnregisterClass();
+}
+
+bool LabApp::Init()
+{
+	if (m_instance == nullptr)
 	{
 		return false;
 	}
+
 	if (!dx.Init())
 	{
 		return false;
 	}
-	
 
 	m_mainwnd = CreateWindow(szWindowClass, this->_appTitle.c_str(),
 		WS_OVERLAPPEDWINDOW,
@@ -120,6 +137,5 @@ LRESULT LabApp::AppWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-	return 0;
 	return 0;
 }

@@ -7,6 +7,7 @@
 #include <malloc.h>
 #include <memory.h>
 
+#include <memory>
 #include <string>
 #include <functional>
 #include <algorithm>
@@ -25,5 +26,6 @@
 
 
 #include <ComInitializer.h>
+#include <d3d11_1.h>
 #include "dxenv.h"
 

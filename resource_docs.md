@@ -33,6 +33,8 @@ coinit-lifetime
 ## pipeline/vertexbuffers/shaders/hlsl
 
 <https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl>
+<https://docs.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-resources-buffers-intro>
+
 
 ## libs overall
 

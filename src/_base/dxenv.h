@@ -1,14 +1,12 @@
 #pragma once
 #ifndef DXENV_H
 #define DXENV_H
-#include <wrl.h>
-#include <d3d11_1.h>
-#include <vector>
+#include "framework.h"
 #pragma comment(lib,"DXGI.lib")
 #pragma comment(lib,"D3D11.lib")
 
-using namespace Microsoft::WRL;
-class DxEnv
+
+class DxEnv final
 {
 	
 public:
@@ -25,6 +23,11 @@ public:
 
 	D3D11_VIEWPORT _viewPortDesc;
 public:
+	DxEnv() = default;
+	DxEnv(const DxEnv&) = delete;
+	DxEnv& operator=(const DxEnv&) = delete;
+	~DxEnv() = default;
+
 	bool EnumAdapters(std::vector<ComPtr<IDXGIAdapter1> >& adapters);
 	void PrintAdapters(std::vector<ComPtr<IDXGIAdapter1>>& adapters);
 	bool Init();

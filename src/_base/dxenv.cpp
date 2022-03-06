@@ -1,5 +1,5 @@
-#include "dxenv.h"
 #include "framework.h"
+#include "dxenv.h"
 
 
 bool DxEnv::EnumAdapters(std::vector<ComPtr<IDXGIAdapter1>>& adapters)
@@ -72,6 +72,7 @@ bool DxEnv::Init()
 bool DxEnv::BuildSwapChain(HWND wnd)
 {
 	if (!_device) { return false; }
+	
 	ComPtr<IDXGIDevice1> pDevice;
 	_device.As(&pDevice);
 	if (!pDevice) { return false; }
@@ -86,14 +87,19 @@ bool DxEnv::BuildSwapChain(HWND wnd)
 
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
-	desc.Windowed = TRUE; // Sets the initial state of full-screen mode.
+
 	desc.BufferCount = 2;
 	desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+
 	desc.SampleDesc.Count = 1;      //multisampling setting
 	desc.SampleDesc.Quality = 0;    //vendor-specific flag
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+
 	desc.OutputWindow = wnd;
+	desc.Windowed = TRUE; // Sets the initial state of full-screen mode.
+	desc.Flags = 0;
+
 	ComPtr<IDXGISwapChain> chain;
 	pFactory->CreateSwapChain(_device.Get(), &desc, chain.GetAddressOf());
 	if (!chain) { return false; }
@@ -125,8 +131,8 @@ void DxEnv::ConnectBuffersAndViews()
 	_device->CreateDepthStencilView(_stencilBuffer.Get(), &depthStencilViewDesc, &_stencilView);
 	
 	ZeroMemory(&_viewPortDesc, sizeof(D3D11_VIEWPORT));
-	_viewPortDesc.Width = _backBufferDesc.Width;
-	_viewPortDesc.Height = _backBufferDesc.Height;
+	_viewPortDesc.Width = static_cast<FLOAT>( _backBufferDesc.Width );
+	_viewPortDesc.Height = static_cast<FLOAT>(_backBufferDesc.Height );
 	_viewPortDesc.MinDepth = 0.0f;
 	_viewPortDesc.MaxDepth = 1.0f;
 	_context->RSSetViewports(1, &_viewPortDesc);
