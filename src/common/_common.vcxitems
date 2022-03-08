@@ -17,10 +17,12 @@
     <None Include="$(MSBuildThisFileDirectory)readme.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\_base\Ticker.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComInitializer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)gpu_exports.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\_base\Ticker.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComInitializer.h" />
   </ItemGroup>
 </Project>

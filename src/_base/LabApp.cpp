@@ -1,6 +1,7 @@
 #include "LabApp.h"
 #include "resource.h"
-#include <shellapi.h>
+#include "Ticker.h"
+
 namespace
 {
 	constexpr LPCTSTR szWindowClass{ _T("dx_lab_window") };
@@ -25,11 +26,11 @@ ATOM LabApp::MyRegisterClass()
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = m_instance;
-	wcex.hIcon = icon;
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = szWindowClass;
+	wcex.hIcon = icon;
 	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 	
 	_registeredClass=RegisterClassEx(&wcex);
@@ -104,6 +105,13 @@ int LabApp::Run()
 	ZeroMemory(&msg, sizeof(msg));
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
+	Ticker getTime;
+	
+	int f60 = 0;
+	float t60 = 0;
+	std::string title;
+	title.resize(20, 0);
+
 	bool gotMessage = false;
 	while (msg.message != WM_QUIT)
 	{
@@ -115,8 +123,15 @@ int LabApp::Run()
 		}
 		else
 		{
-			//TODO: getTimeDelta, common to all scenes
-
+			float delta = getTime.delta();
+			float elapsed = getTime.elapsed();
+			t60 += delta;
+			f60++;
+			if (f60 >= 60) {
+				sprintf_s(title.data(), title.size(), "%.3f ms per 60", t60);
+				f60 = 0; t60 = 0;
+				SetWindowText(m_mainwnd, title.c_str());
+			}
 			//updateEntities //TODO: a SceneMgr to add/remove current entities
 
 			//{pausable
@@ -129,7 +144,11 @@ int LabApp::Run()
 
 			//sRenderSystem //->different renderoutput per scene
 			
-			const float rgba[4]{0.1f,0.1f,0.3f,1.0f};
+			while (delta > 1.0f)
+			{
+				delta /= 10.0f;
+			}
+			const float rgba[4]{delta,0.1f,std::sinf(elapsed*0.001f)*0.3f+0.3f,1.0f};
 			dx._context->ClearRenderTargetView(dx._renderTarget.Get(), rgba);
 
 			//showframe
