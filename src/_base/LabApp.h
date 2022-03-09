@@ -7,7 +7,8 @@ class LabApp final
 {
 	HWND m_mainwnd = NULL;
 	HINSTANCE m_instance = NULL;
-	std::string _exePath;
+	std::string _exeFullPath;
+	std::string _exeFolder;
 	std::string _appTitle;
 	ATOM MyRegisterClass();
 	ATOM _registeredClass = 0;
