@@ -140,21 +140,15 @@ int LabApp::Run()
 
 	//describing the vertex-structure (R,G)
 	ComPtr<ID3D11InputLayout> pInputLayout;
-	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
-	{
-		//Semantic in vertexshader:Position, 0, float2, slot,offset
-		{"Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0}
-	};
-
-	dx._device->CreateInputLayout(inputDesc, static_cast<UINT>(std::size(inputDesc)),
-		vertexblob->GetBufferPointer(), vertexblob->GetBufferSize(),
-		&pInputLayout); //->IA
-
-	//creating the vertex structure
 	struct vertex
 	{
 		float x; 
 		float y; 
+	};
+	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
+	{
+		//Semantic in vertexshader:Position, 0, float2, slot,offset
+		{"Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0}
 	};
 	std::vector<vertex> vertices{
 		{0.0f,0.5f},
@@ -164,6 +158,11 @@ int LabApp::Run()
 		{0.8f,-1.0f},
 		{0.5f,0.0f}
 	};
+
+	dx._device->CreateInputLayout(inputDesc, static_cast<UINT>(std::size(inputDesc)),
+		vertexblob->GetBufferPointer(), vertexblob->GetBufferSize(),
+		&pInputLayout); //->IA
+
 
 	ComPtr<ID3D11Buffer> pVertexBuffer;
 	D3D11_BUFFER_DESC bufferDesc{
