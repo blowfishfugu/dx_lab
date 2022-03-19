@@ -159,7 +159,10 @@ int LabApp::Run()
 	std::vector<vertex> vertices{
 		{0.0f,0.5f},
 		{0.3f,-0.3f},
-		{-0.7f,-0.7f}
+		{-0.7f,-0.7f},
+		{0.8f,0.9f},
+		{0.8f,-1.0f},
+		{0.5f,0.0f}
 	};
 
 	ComPtr<ID3D11Buffer> pVertexBuffer;
@@ -175,6 +178,8 @@ int LabApp::Run()
 
 	dx._device->CreateBuffer(&bufferDesc, &bufferData, &pVertexBuffer);
 	
+	UINT flip = 0;
+
 	bool gotMessage = false;
 	while (msg.message != WM_QUIT)
 	{
@@ -186,6 +191,7 @@ int LabApp::Run()
 		}
 		else
 		{
+			flip++;
 			float delta = getTime.delta();
 			float elapsed = getTime.elapsed();
 			t60 += delta;
@@ -244,7 +250,7 @@ int LabApp::Run()
 				//it can multipass on several targets.. but here only one
 				dx._context->OMSetRenderTargets(1u, dx._renderTarget.GetAddressOf(), nullptr);
 				//||
-				dx._context->Draw( static_cast<UINT>(std::size(vertices)), 0u);
+				dx._context->Draw( static_cast<UINT>(vertices.size()/2), (vertices.size()/2)*(flip%2));
 			}
 			//showframe
 			dx._swapChain->Present(1, 0);
