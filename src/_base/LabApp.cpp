@@ -158,6 +158,7 @@ int LabApp::Run()
 		{0.8f,-1.0f},
 		{0.5f,0.0f}
 	};
+	std::vector<UINT> indices{0,1,2,3,4,5,0,5,1};
 
 	dx._device->CreateInputLayout(inputDesc, static_cast<UINT>(std::size(inputDesc)),
 		vertexblob->GetBufferPointer(), vertexblob->GetBufferSize(),
@@ -172,11 +173,26 @@ int LabApp::Run()
 		0u, 0u,
 		static_cast<UINT>(sizeof(vertex))
 	};
+
 	D3D11_SUBRESOURCE_DATA bufferData = {};
 	bufferData.pSysMem = vertices.data();
 
 	dx._device->CreateBuffer(&bufferDesc, &bufferData, &pVertexBuffer);
 	
+	ComPtr<ID3D11Buffer> pIndexBuffer;
+	D3D11_BUFFER_DESC indexDesc{
+		static_cast<UINT>(sizeof(UINT)*indices.size()),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_INDEX_BUFFER,
+		0u, 0u,
+		static_cast<UINT>(sizeof(UINT))
+	};
+	D3D11_SUBRESOURCE_DATA indexData;
+	indexData.pSysMem = indices.data();
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+	dx._device->CreateBuffer(&indexDesc, &indexData, &pIndexBuffer);
+
 	UINT flip = 0;
 
 	bool gotMessage = false;
@@ -237,19 +253,22 @@ int LabApp::Run()
 				constexpr const UINT bufferCount = static_cast<UINT>(_countof(strides));
 
 				dx._context->IASetVertexBuffers(0u, bufferCount, buffers, strides, offsets);
+				dx._context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0u);
 				//topology
 				dx._context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				//bind vertex layout
 				dx._context->IASetInputLayout(pInputLayout.Get());
 				//||
 				dx._context->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+				
 				//||
 				dx._context->PSSetShader(pPixelShader.Get(), nullptr, 0u);
 				//||
 				//it can multipass on several targets.. but here only one
 				dx._context->OMSetRenderTargets(1u, dx._renderTarget.GetAddressOf(), nullptr);
 				//||
-				dx._context->Draw( static_cast<UINT>(vertices.size()/2), (vertices.size()/2)*(flip%2));
+				//dx._context->Draw( static_cast<UINT>(vertices.size()/2), (vertices.size()/2)*(flip%2));
+				dx._context->DrawIndexed(static_cast<UINT>(indices.size()), 0u, 0u);
 			}
 			//showframe
 			dx._swapChain->Present(1, 0);
