@@ -22,7 +22,7 @@ public:
 	ComPtr<ID3D11Texture2D> _stencilBuffer;
 	ComPtr<ID3D11DepthStencilView> _stencilView;
 
-	D3D11_VIEWPORT _viewPortDesc;
+	D3D11_VIEWPORT _viewPortDesc{};
 public:
 	DxEnv() = default;
 	DxEnv(const DxEnv&) = delete;
