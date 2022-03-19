@@ -24,5 +24,6 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\_base\Ticker.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComInitializer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ConstBuildFlags.h" />
   </ItemGroup>
 </Project>

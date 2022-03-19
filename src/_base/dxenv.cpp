@@ -40,7 +40,11 @@ bool DxEnv::Init()
 {
 	std::vector<ComPtr<IDXGIAdapter1>> adapters;
 	this->EnumAdapters(adapters);
-	this->PrintAdapters(adapters);
+	
+	if (isDebug())
+	{
+		this->PrintAdapters(adapters);
+	}
 
 	constexpr const D3D_FEATURE_LEVEL featureLevels[] =
 	{
@@ -48,19 +52,30 @@ bool DxEnv::Init()
 		D3D_FEATURE_LEVEL_11_0
 	};
 	constexpr const UINT featureLevelCount = sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL);
-
+	constexpr const UINT deviceFlags = GetDebugValue(D3D11_CREATE_DEVICE_DEBUG, 0);
+	
 	ComPtr<ID3D11Device> pDevice = nullptr;
 	D3D_FEATURE_LEVEL retFeatureLevel{};
 	ComPtr<ID3D11DeviceContext> pImmediateContext = nullptr;
-	D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0,
-		0, featureLevels, featureLevelCount, D3D11_SDK_VERSION,
-		&pDevice, &retFeatureLevel, &pImmediateContext);
+	
+	D3D11CreateDevice(nullptr, //defaultAdapter
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL /*hSoftwareModule*/,
+		deviceFlags,
+		featureLevels, featureLevelCount, D3D11_SDK_VERSION,
+		&pDevice, &retFeatureLevel, &pImmediateContext //outputs
+	);
+
 	if (pDevice && pImmediateContext)
 	{
 		pDevice.As(&_device);
 		pImmediateContext.As(&_context);
-		OutputDebugStringA(std::to_string(retFeatureLevel).c_str());
-		OutputDebugString(_T("\n"));
+
+		if (isDebug())
+		{
+			OutputDebugStringA(std::to_string(retFeatureLevel).c_str());
+			OutputDebugString(_T("\n"));
+		}
 	}
 
 	return
@@ -131,6 +146,8 @@ void DxEnv::ConnectBuffersAndViews()
 	_device->CreateDepthStencilView(_stencilBuffer.Get(), &depthStencilViewDesc, &_stencilView);
 	
 	ZeroMemory(&_viewPortDesc, sizeof(D3D11_VIEWPORT));
+	_viewPortDesc.TopLeftX = 0.0f;
+	_viewPortDesc.TopLeftY = 0.0f;
 	_viewPortDesc.Width = static_cast<FLOAT>( _backBufferDesc.Width );
 	_viewPortDesc.Height = static_cast<FLOAT>(_backBufferDesc.Height );
 	_viewPortDesc.MinDepth = 0.0f;

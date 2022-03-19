@@ -20,7 +20,10 @@ coinit-lifetime
 
 ## initialize a window
 
-...
+...offtocpics, all about windows, messageloops, helperlibs, interesting samples
+
+<https://github.com/microsoft/Windows-classic-samples/tree/main/Samples>
+<https://docs.microsoft.com/en-us/windows/apps/desktop/modernize/using-the-visual-layer-with-win32>
 
 ## init device/context/"view", attach to window
 
