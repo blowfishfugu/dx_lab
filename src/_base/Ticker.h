@@ -18,14 +18,14 @@ public:
 	
 	float delta()
 	{
-		clock::time_point now = clock::now();
-		ms gone = std::chrono::duration_cast<ms>(now - stepstart);
-		stepstart = now;
+		clock::time_point last = stepstart;
+		stepstart = clock::now();
+		ms gone = stepstart - last;
 		return gone.count();
 	}
 	float elapsed()
 	{
-		return std::chrono::duration_cast<ms>(clock::now() - fullstart).count();
+		return ms(clock::now() - fullstart).count();
 	}
 	~Ticker() = default;
 };
