@@ -120,20 +120,22 @@ int LabApp::Run()
 	title.resize(20, 0);
 	const std::filesystem::path folder{ _exeFolder };
 
-	std::filesystem::path vertexFile{ folder };
-	vertexFile.concat(L"\\VertexShader.cso");
 
 	std::filesystem::path pixelFile{ folder };
 	pixelFile.concat(L"\\PixelShader.cso");
 	
-	ComPtr<ID3DBlob> blob;
+	ComPtr<ID3DBlob> pixelblob;
 	ComPtr<ID3D11PixelShader> pPixelShader;
-	D3DReadFileToBlob(pixelFile.c_str(), &blob);
-	dx._device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pPixelShader);
+	D3DReadFileToBlob(pixelFile.c_str(), &pixelblob);
+	dx._device->CreatePixelShader(pixelblob->GetBufferPointer(), pixelblob->GetBufferSize(), nullptr, &pPixelShader);
 
+	std::filesystem::path vertexFile{ folder };
+	vertexFile.concat(L"\\VertexShader.cso");
+
+	ComPtr<ID3DBlob> vertexblob;
 	ComPtr<ID3D11VertexShader> pVertexShader;
-	D3DReadFileToBlob(vertexFile.c_str(), &blob);
-	dx._device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pVertexShader);
+	D3DReadFileToBlob(vertexFile.c_str(), &vertexblob);
+	dx._device->CreateVertexShader(vertexblob->GetBufferPointer(), vertexblob->GetBufferSize(), nullptr, &pVertexShader);
 
 
 	//describing the vertex-structure (R,G)
@@ -144,8 +146,8 @@ int LabApp::Run()
 		{"Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0}
 	};
 
-	dx._device->CreateInputLayout(inputDesc, (UINT)std::size(inputDesc),
-		blob->GetBufferPointer(), blob->GetBufferSize(), 
+	dx._device->CreateInputLayout(inputDesc, static_cast<UINT>(std::size(inputDesc)),
+		vertexblob->GetBufferPointer(), vertexblob->GetBufferSize(),
 		&pInputLayout); //->IA
 
 	//creating the vertex structure
@@ -221,11 +223,17 @@ int LabApp::Run()
 			//Draw
 			if (pVertexBuffer)
 			{
-				const UINT stride = sizeof(vertex);
-				const UINT offset = 0u;
-				dx._context->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(),	&stride, &offset);
+				constexpr const UINT strides[]{ static_cast<UINT>(sizeof(vertex)) };
+				constexpr const UINT offsets[]{ 0u };
+				ID3D11Buffer* const buffers[]{ pVertexBuffer.Get() };
+				static_assert(_countof(strides) == _countof(offsets));
+				static_assert(_countof(strides) == _countof(buffers));
+
+				constexpr const UINT bufferCount = static_cast<UINT>(_countof(strides));
+
+				dx._context->IASetVertexBuffers(0u, bufferCount, buffers, strides, offsets);
 				//topology
-				dx._context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+				dx._context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				//bind vertex layout
 				dx._context->IASetInputLayout(pInputLayout.Get());
 				//||
@@ -236,7 +244,7 @@ int LabApp::Run()
 				//it can multipass on several targets.. but here only one
 				dx._context->OMSetRenderTargets(1u, dx._renderTarget.GetAddressOf(), nullptr);
 				//||
-				dx._context->Draw((UINT)std::size(vertices), 0u);
+				dx._context->Draw( static_cast<UINT>(std::size(vertices)), 0u);
 			}
 			//showframe
 			dx._swapChain->Present(1, 0);
