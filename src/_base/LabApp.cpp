@@ -125,7 +125,7 @@ int LabApp::Run()
 
 	std::filesystem::path pixelFile{ folder };
 	pixelFile.concat(L"\\PixelShader.cso");
-
+	
 	ComPtr<ID3DBlob> blob;
 	ComPtr<ID3D11PixelShader> pPixelShader;
 	D3DReadFileToBlob(pixelFile.c_str(), &blob);
@@ -149,21 +149,30 @@ int LabApp::Run()
 		&pInputLayout); //->IA
 
 	//creating the vertex structure
-	struct vertex { float x; float y; };
-	const vertex vertices[]{ {0.0f,0.5f},{0.3f,-0.3f},{-0.7f,-0.7f} };
+	struct vertex
+	{
+		float x; 
+		float y; 
+	};
+	std::vector<vertex> vertices{
+		{0.0f,0.5f},
+		{0.3f,-0.3f},
+		{-0.7f,-0.7f}
+	};
+
 	ComPtr<ID3D11Buffer> pVertexBuffer;
 	D3D11_BUFFER_DESC bufferDesc{
-		sizeof(vertices),
+		static_cast<UINT>(sizeof(vertex)*vertices.size()),
 		D3D11_USAGE_DEFAULT,
 		D3D11_BIND_VERTEX_BUFFER,
 		0u, 0u,
-		sizeof(vertex)
+		static_cast<UINT>(sizeof(vertex))
 	};
-	D3D11_SUBRESOURCE_DATA pData = {};
-	pData.pSysMem = vertices;
+	D3D11_SUBRESOURCE_DATA bufferData = {};
+	bufferData.pSysMem = vertices.data();
 
-	dx._device->CreateBuffer(&bufferDesc, &pData, &pVertexBuffer);
-
+	dx._device->CreateBuffer(&bufferDesc, &bufferData, &pVertexBuffer);
+	
 	bool gotMessage = false;
 	while (msg.message != WM_QUIT)
 	{
@@ -216,7 +225,7 @@ int LabApp::Run()
 				const UINT offset = 0u;
 				dx._context->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(),	&stride, &offset);
 				//topology
-				dx._context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				dx._context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 				//bind vertex layout
 				dx._context->IASetInputLayout(pInputLayout.Get());
 				//||
