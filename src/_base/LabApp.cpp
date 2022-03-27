@@ -138,25 +138,53 @@ int LabApp::Run()
 	dx._device->CreateVertexShader(vertexblob->GetBufferPointer(), vertexblob->GetBufferSize(), nullptr, &pVertexShader);
 
 
-	//describing the vertex-structure (R,G)
+	//describing the vertex-structure
 	ComPtr<ID3D11InputLayout> pInputLayout;
-	struct vertex
+	struct color //DXGI_FORMAT_R32G32B32_FLOAT
+	{
+		float r;
+		float g;
+		float b;
+	};
+	constexpr UINT colorSize = sizeof(color);
+	
+	struct colorU //DXGI_FORMAT_R8G8B8A8_UNORM
+	{
+		unsigned char r;
+		unsigned char g;
+		unsigned char b;
+		unsigned char a;
+	};
+	constexpr UINT colorUSize = sizeof(colorU);
+
+
+	struct xypos //DXGI_FORMAT_R32G32_FLOAT
 	{
 		float x; 
-		float y; 
+		float y;
 	};
+	constexpr UINT positionSize = sizeof(xypos);
+	
+	struct vertex
+	{
+		xypos p;
+		color c;
+	};
+	constexpr UINT vertexSize = sizeof(vertex);
+
 	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
 	{
 		//Semantic in vertexshader:Position, 0, float2, slot,offset
-		{"Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0}
+		{"Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0},
+		{"Color",0,DXGI_FORMAT_R32G32B32_FLOAT,0,positionSize,D3D11_INPUT_PER_VERTEX_DATA,0}
 	};
 	std::vector<vertex> vertices{
-		{0.0f,0.5f},
-		{0.3f,-0.3f},
-		{-0.7f,-0.7f},
-		{0.8f,0.9f},
-		{0.8f,-1.0f},
-		{0.5f,0.0f}
+		{ {0.0f,0.5f}, {1.0f,0.0f,0.0f} },
+		{ {0.3f,-0.3f}, {0.0f,1.0f,0.0f} },
+		{ {-0.7f,-0.7f}, {0.0f,0.0f,1.0f} },
+		{ {0.8f,0.9f}, {1.0f,0.5f,0.0f} },
+		{ {0.8f,-1.0f}, {0.0f,1.0f,0.5f} },
+		{ {0.5f,0.0f}, {0.5f,0.0f,1.0f} }
 	};
 	std::vector<UINT> indices{0,1,2,3,4,5,0,5,1};
 
@@ -167,11 +195,11 @@ int LabApp::Run()
 
 	ComPtr<ID3D11Buffer> pVertexBuffer;
 	D3D11_BUFFER_DESC bufferDesc{
-		static_cast<UINT>(sizeof(vertex)*vertices.size()),
+		static_cast<UINT>(vertexSize*vertices.size()),
 		D3D11_USAGE_DEFAULT,
 		D3D11_BIND_VERTEX_BUFFER,
 		0u, 0u,
-		static_cast<UINT>(sizeof(vertex))
+		vertexSize
 	};
 
 	D3D11_SUBRESOURCE_DATA bufferData = {};
@@ -244,7 +272,7 @@ int LabApp::Run()
 			//Draw
 			if (pVertexBuffer)
 			{
-				constexpr const UINT strides[]{ static_cast<UINT>(sizeof(vertex)) };
+				constexpr const UINT strides[]{ vertexSize };
 				constexpr const UINT offsets[]{ 0u };
 				ID3D11Buffer* const buffers[]{ pVertexBuffer.Get() };
 				static_assert(_countof(strides) == _countof(offsets));

@@ -59,7 +59,8 @@ bool DxEnv::Init()
 	ComPtr<ID3D11DeviceContext> pImmediateContext = nullptr;
 	
 	D3D11CreateDevice(nullptr, //defaultAdapter
-		D3D_DRIVER_TYPE_HARDWARE,
+		D3D_DRIVER_TYPE_HARDWARE, 
+		//D3D_DRIVER_TYPE_REFERENCE,
 		NULL /*hSoftwareModule*/,
 		deviceFlags,
 		featureLevels, featureLevelCount, D3D11_SDK_VERSION,
