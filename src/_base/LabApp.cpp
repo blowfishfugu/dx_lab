@@ -225,6 +225,32 @@ int LabApp::Run()
 	indexData.SysMemSlicePitch = 0;
 	dx._device->CreateBuffer(&indexDesc, &indexData, &pIndexBuffer);
 
+
+	struct ConstantMatrix
+	{
+		float matrix[4][4];
+	};
+	float angle = 0.5f;
+	auto updateTransform = [](DxEnv& dx, float angle)
+	{
+		ConstantMatrix transform
+		{
+			dx._backbufferRatio* std::cos(angle), std::sin(angle), 0.0f, 0.0f,
+			dx._backbufferRatio* -std::sin(angle), std::cos(angle), 0.0f, 0.0f,
+			0.0f,0.0f,1.0f,0.0f,
+			0.0f,0.0f,0.0f,1.0f
+		};
+		return transform;
+	};
+	
+	D3D11_BUFFER_DESC constDesc;
+	constDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constDesc.Usage = D3D11_USAGE_DYNAMIC;
+	constDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	constDesc.MiscFlags = 0u;
+	constDesc.ByteWidth = sizeof(ConstantMatrix);
+	constDesc.StructureByteStride = 0u;
+
 	UINT flip = 0;
 
 	bool gotMessage = false;
@@ -258,7 +284,8 @@ int LabApp::Run()
 			//}
 
 			//sUpdateInputs //->different inputs per scene
-
+			
+			//->UpdateSubResource
 			//sRenderSystem //->different renderoutput per scene
 			
 			while (delta > 1.0f)
@@ -287,12 +314,22 @@ int LabApp::Run()
 
 				dx._context->IASetVertexBuffers(0u, bufferCount, buffers, strides, offsets);
 				dx._context->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0u);
+				
 				//topology
 				dx._context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				//bind vertex layout
 				dx._context->IASetInputLayout(pInputLayout.Get());
 				//||
+				ConstantMatrix transform = updateTransform(dx, elapsed*0.001f);
+				D3D11_SUBRESOURCE_DATA constData{};
+				constData.pSysMem = &transform;
+				
+				ComPtr<ID3D11Buffer> pConstantBuffer;
+				dx._device->CreateBuffer(&constDesc, &constData, &pConstantBuffer);
+
+
 				dx._context->VSSetShader(pVertexShader.Get(), nullptr, 0u);
+				dx._context->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 				
 				//||
 				dx._context->PSSetShader(pPixelShader.Get(), nullptr, 0u);

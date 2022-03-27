@@ -17,6 +17,7 @@ public:
 
 	ComPtr<ID3D11Texture2D> _backBuffer;
 	CD3D11_TEXTURE2D_DESC _backBufferDesc;
+	FLOAT _backbufferRatio = 0.0f;
 	ComPtr<ID3D11RenderTargetView> _renderTarget;
 
 	ComPtr<ID3D11Texture2D> _stencilBuffer;

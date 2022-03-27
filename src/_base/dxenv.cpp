@@ -155,4 +155,5 @@ void DxEnv::ConnectBuffersAndViews()
 	_viewPortDesc.MaxDepth = 1.0f;
 	_context->RSSetViewports(1, &_viewPortDesc);
 
+	_backbufferRatio = static_cast<FLOAT>(_backBufferDesc.Height) / static_cast<FLOAT>(_backBufferDesc.Width);
 }
