@@ -106,13 +106,14 @@ bool LabApp::Init()
 	return true;
 }
 
+//TODO: dx-init and dx-render into separate class and pass that as run-parameter
 int LabApp::Run()
 {
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
-	Ticker getTime;
+	Ticker getTime; //TODO: Add Tick-method to precalculate elapsed/delta
 	
 	int f60 = 0;
 	float t60 = 0;
@@ -140,6 +141,8 @@ int LabApp::Run()
 
 	//describing the vertex-structure
 	ComPtr<ID3D11InputLayout> pInputLayout;
+	
+	//TODO: common vertex-components into separate header
 	struct color //DXGI_FORMAT_R32G32B32_FLOAT
 	{
 		float r;
@@ -172,6 +175,7 @@ int LabApp::Run()
 	};
 	constexpr UINT vertexSize = sizeof(vertex);
 
+	//TODO: template to build input_elements by component-type
 	const D3D11_INPUT_ELEMENT_DESC inputDesc[] =
 	{
 		//Semantic in vertexshader:Position, 0, float2, slot,offset
@@ -244,7 +248,8 @@ int LabApp::Run()
 				f60 = 0; t60 = 0;
 				SetWindowText(m_mainwnd, title.c_str());
 			}
-			//updateEntities //TODO: a SceneMgr to add/remove current entities
+			//updateEntities 
+			// TODO: a SceneMgr to add/remove current entities
 
 			//{pausable
 			//sMovement
@@ -306,10 +311,12 @@ int LabApp::Run()
 	return static_cast<int>(msg.wParam);
 }
 
-void LabApp::OnLeave()
+void LabApp::OnLeave() //TODO: OnLeave necessary? or RAII?
 {
 }
 
+//TODO: trampoline-method to attach wndproc per window in wm_create
+//TODO: capture keyboard and mouse
 LRESULT LabApp::AppWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
