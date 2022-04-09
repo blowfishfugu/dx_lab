@@ -113,7 +113,7 @@ int LabApp::Run()
 	ZeroMemory(&msg, sizeof(msg));
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
-	Ticker getTime; //TODO: Add Tick-method to precalculate elapsed/delta
+	Ticker ticker(60);
 	
 	int f60 = 0;
 	float t60 = 0;
@@ -265,15 +265,13 @@ int LabApp::Run()
 		else
 		{
 			flip++;
-			float delta = getTime.delta();
-			float elapsed = getTime.elapsed();
-			t60 += delta;
-			f60++;
-			if (f60 >= 60) {
-				sprintf_s(title.data(), title.size(), "%.3f ms per 60", t60);
-				f60 = 0; t60 = 0;
-				SetWindowText(m_mainwnd, title.c_str());
-			}
+			ticker.Tick();
+			const float delta = ticker.GetDelta();
+			const float elapsed = ticker.GetElapsed();
+			const float frameDelta = ticker.GetFramesDelta();
+			sprintf_s(title.data(), title.size(), "%.3f ms per 60", frameDelta);
+			SetWindowText(m_mainwnd, title.c_str());
+			
 			//updateEntities 
 			// TODO: a SceneMgr to add/remove current entities
 
@@ -288,11 +286,8 @@ int LabApp::Run()
 			//->UpdateSubResource
 			//sRenderSystem //->different renderoutput per scene
 			
-			while (delta > 1.0f)
-			{
-				delta /= 10.0f;
-			}
-			const float rgba[4]{delta,0.1f,std::sinf(elapsed*0.001f)*0.3f+0.3f,1.0f};
+			float rb = std::sinf(elapsed*0.001f)*0.3f + 0.3f;
+			const float rgba[4]{rb*0.5f,delta*0.001f,rb,1.0f};
 			dx._context->ClearRenderTargetView(dx._renderTarget.Get(), rgba);
 
 			
