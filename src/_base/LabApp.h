@@ -25,7 +25,7 @@ public:
 	~LabApp();
 	[[nodiscard]] virtual bool Init();
 	int Run();
-	virtual void OnLeave();
+	
 	static LRESULT CALLBACK AppWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };
 

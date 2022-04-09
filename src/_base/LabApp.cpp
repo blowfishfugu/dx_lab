@@ -339,12 +339,7 @@ int LabApp::Run()
 			dx._swapChain->Present(1, 0);
 		}
 	}
-	this->OnLeave();
 	return static_cast<int>(msg.wParam);
-}
-
-void LabApp::OnLeave() //TODO: OnLeave necessary? or RAII?
-{
 }
 
 //TODO: trampoline-method to attach wndproc per window in wm_create
