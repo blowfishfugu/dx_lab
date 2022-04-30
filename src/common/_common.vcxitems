@@ -20,10 +20,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\_base\Ticker.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ComInitializer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)gpu_exports.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Lerps.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)..\_base\Ticker.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ComInitializer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ConstBuildFlags.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Lerps.h" />
   </ItemGroup>
 </Project>
