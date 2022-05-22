@@ -115,8 +115,6 @@ int LabApp::Run()
 
 	Ticker ticker(60);
 	
-	int f60 = 0;
-	float t60 = 0;
 	std::string title;
 	title.resize(20, 0);
 	const std::filesystem::path folder{ _exeFolder };
@@ -231,7 +229,7 @@ int LabApp::Run()
 		float matrix[4][4];
 	};
 	float angle = 0.5f;
-	auto updateTransform = [](DxEnv& dx, float angle)
+	auto rotationZ = [](DxEnv& dx, float angle)
 	{
 		ConstantMatrix transform
 		{
@@ -315,7 +313,7 @@ int LabApp::Run()
 				//bind vertex layout
 				dx._context->IASetInputLayout(pInputLayout.Get());
 				//||
-				ConstantMatrix transform = updateTransform(dx, elapsed*0.001f);
+				ConstantMatrix transform = rotationZ(dx, elapsed*0.001f);
 				D3D11_SUBRESOURCE_DATA constData{};
 				constData.pSysMem = &transform;
 				
