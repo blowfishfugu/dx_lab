@@ -13,10 +13,11 @@ coinit-lifetime
 <https://docs.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-enum>
 <https://docs.microsoft.com/en-us/windows/win32/direct3d11/overviews-direct3d-11-devices-downlevel-get>
 
-## walkthrough
+## walkthroughs
 
 <https://antongerdelan.net/opengl/d3d11.html>
 <https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/complete-code-sample-for-using-a-corewindow-with-directx#rendererh>
+<https://www.youtube.com/playlist?list=PLqCJpWy5Fohd3S7ICFXwUomYW0Wv67pDD>
 
 ## initialize a window
 
