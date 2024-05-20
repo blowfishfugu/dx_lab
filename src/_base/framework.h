@@ -28,6 +28,5 @@
 
 #include <ComInitializer.h>
 #include <ConstBuildFlags.h>
-#include <d3d11_1.h>
 #include "dxenv.h"
 

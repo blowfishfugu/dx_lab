@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "dxenv.h"
 
+//#include "gpu_exports.cpp"
 
 bool DxEnv::EnumAdapters(std::vector<ComPtr<IDXGIAdapter1>>& adapters)
 {
@@ -52,7 +53,7 @@ bool DxEnv::Init()
 		D3D_FEATURE_LEVEL_11_0
 	};
 	constexpr const UINT featureLevelCount = sizeof(featureLevels) / sizeof(D3D_FEATURE_LEVEL);
-	constexpr const UINT deviceFlags = GetDebugValue(D3D11_CREATE_DEVICE_DEBUG, 0);
+	constexpr const UINT deviceFlags = 0;//GetDebugValue(D3D11_CREATE_DEVICE_DEBUG, 0);
 	
 	ComPtr<ID3D11Device> pDevice = nullptr;
 	D3D_FEATURE_LEVEL retFeatureLevel{};
